@@ -1,0 +1,12 @@
+---
+- hosts: $hosts
+  gather_facts: false
+  vars:
+  user: lars
+  tasks:
+  - name: obtain deployment information from a source
+    action: site_facts facts=/tmp/mitx.json
+  - action: file state=directory path=/tmp/data
+  - action: template src=vars.txt dest=/tmp/data/${item.name}
+    with_items: $packages
+

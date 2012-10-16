@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import json
+import os
+
+def main():
+    module = AnsibleModule(
+        argument_spec = dict(
+            facts=dict(required=False,
+                default='/etc/facter/facts.d/mitx_release.json'),
+            )
+    )
+
+    facts = module.params['facts']
+
+    if os.path.exists(facts):
+        data = open(facts)
+        json_data = json.load(data)
+        packages = []
+        for (k, v) in json_data.iteritems():
+            if k != 'content_package_names':
+                packages.append({ "name": k, "SHA" : v })
+        results = dict(ansible_facts=dict(packages=packages))
+        data.close()
+        module.exit_json(**results)
+    else:
+        return {}
+
+
+# include magic from lib/ansible/module_common.py
+#<<INCLUDE_ANSIBLE_MODULE_COMMON>>
+main()

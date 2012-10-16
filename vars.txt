@@ -1,2 +1,3 @@
+{{ ansible_kernel }}
 {{ item['name'] }} sha {{ item['SHA'] }}
 
